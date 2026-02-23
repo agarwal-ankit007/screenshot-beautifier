@@ -11,7 +11,9 @@ function App() {
     padding: 64,
     radius: 16,
     shadow: 'shadow-2xl',
-    background: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500',
+    background: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500', // Pre-defined tailwind class
+    customColor: '', // Used if they pick a color from the wheel
+    pattern: 'none' // 'dots', 'grid', 'wavy', or 'none'
   })
 
   const previewRef = useRef(null)

@@ -17,18 +17,49 @@ const SHADOWS = [
     { name: 'Hard', value: 'shadow-[0_20px_50px_rgba(0,0,0,0.7)]' },
 ]
 
+const PATTERNS = [
+    { name: 'None', value: 'none' },
+    { name: 'Dots', value: 'dots' },
+    { name: 'Grid', value: 'grid' },
+    { name: 'Wavy', value: 'wavy' },
+]
+
 export default function Controls({ settings, setSettings }) {
     const handleChange = (key, val) => {
-        setSettings(prev => ({ ...prev, [key]: val }))
+        setSettings(prev => {
+            const next = { ...prev, [key]: val }
+            // If picking a preset class, clear the custom hex color
+            if (key === 'background') next.customColor = ''
+            // If picking a custom color, clear the tailwind gradient class
+            if (key === 'customColor') next.background = ''
+            return next
+        })
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
 
-            {/* Backgrounds */}
-            <div className="space-y-3">
+            {/* Backgrounds Section */}
+            <div className="space-y-4">
                 <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Background</label>
-                <div className="flex flex-wrap gap-2">
+
+                <div className="flex flex-wrap gap-2 items-center">
+                    {/* Custom Color Wheel */}
+                    <div className="relative group flex items-center justify-center">
+                        <input
+                            type="color"
+                            value={settings.customColor || '#000000'}
+                            onChange={(e) => handleChange('customColor', e.target.value)}
+                            className={`w-8 h-8 rounded-full cursor-pointer p-0 border-0 bg-transparent transition-transform hover:scale-110 ${settings.customColor ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-800' : ''
+                                }`}
+                            title="Custom Hex Color"
+                            style={{ WebkitAppearance: 'none' }}
+                        />
+                    </div>
+
+                    <div className="w-[1px] h-6 bg-slate-700 mx-1"></div>
+
+                    {/* Preset Gradients */}
                     {BACKGROUNDS.map(bg => (
                         <button
                             key={bg.name}
@@ -37,6 +68,25 @@ export default function Controls({ settings, setSettings }) {
                             className={`w-8 h-8 rounded-full ${bg.color} transition-transform hover:scale-110 ${settings.background === bg.value ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-800' : ''
                                 }`}
                         />
+                    ))}
+                </div>
+            </div>
+
+            {/* Patterns Section */}
+            <div className="space-y-3">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pattern Overlay</label>
+                <div className="grid grid-cols-2 gap-2">
+                    {PATTERNS.map(pat => (
+                        <button
+                            key={pat.name}
+                            onClick={() => handleChange('pattern', pat.value)}
+                            className={`py-2 px-3 text-sm rounded-lg border transition-colors ${settings.pattern === pat.value
+                                    ? 'bg-slate-700 border-emerald-500 text-white'
+                                    : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                                }`}
+                        >
+                            {pat.name}
+                        </button>
                     ))}
                 </div>
             </div>
