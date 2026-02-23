@@ -3,7 +3,15 @@ import { Upload } from 'lucide-react'
 
 export default function Uploader({ onImageLoad }) {
     const handleFile = (file) => {
-        if (!file || !file.type.startsWith('image/')) return
+        if (!file) return
+
+        // Some OS/Browser drag-and-drops strip the MIME type, so fallback to checking extension
+        const isImage = file.type.startsWith('image/') || /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file.name)
+        if (!isImage) {
+            alert("Please upload a valid image file.")
+            return
+        }
+
         const reader = new FileReader()
         reader.onload = (e) => onImageLoad(e.target.result)
         reader.readAsDataURL(file)
